@@ -1,0 +1,38 @@
+.hero {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 4rem 1rem;
+  }
+  
+  .hero-content img {
+    margin-bottom: 1.5rem;
+  }
+  
+  .hero-content h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .hero-content p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .featured-products,
+  .about,
+  .testimonials,
+  .newsletter {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  
+  .featured-products h2,
+  .about h2,
+  .testimonials h2,
+  .newsletter h2 {
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
