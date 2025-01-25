@@ -28,16 +28,18 @@ export default function Home({ featuredProducts = [] }) {
           <Link href="/about">
             About
           </Link>
-          <Link href="/" className="flex justify-center items-center">
-            <Image
-              src="/images/logo.png"
-              alt="Sweethearts Bakery Logo"
-              width={330}
-              height={110}
-              priority
-              className="nav-logo"
-            />
-          </Link>
+          <div className="logo-container">
+            <Link href="/">
+              <Image
+                src="/images/logo.png"
+                alt="Sweethearts Bakery Logo"
+                width={330}
+                height={110}
+                priority
+                className="nav-logo"
+              />
+            </Link>
+          </div>
           <Link href="/find-us">
             Find Us
           </Link>
