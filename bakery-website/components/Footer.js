@@ -4,13 +4,6 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="footer-container">
-        <div className="footer-section">
-          <h3>Visit Us</h3>
-          <p>123 Bakery Street</p>
-          <p>Sweetville, CA 90210</p>
-          <p>Mon-Sat: 7am - 7pm</p>
-          <p>Sunday: 8am - 5pm</p>
-        </div>
 
         <div className="footer-section">
           <h3>Quick Links</h3>
@@ -21,10 +14,7 @@ export default function Footer() {
           <h3>Contact</h3>
           <p>Email: ahelpfullheart@itssweetrighthere.com</p>
           <div className="social-links">
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
-              Facebook
-            </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.instagram.com/itssweetrighthere?igsh=dDl6ZXg3djYyMjI3" target="_blank" rel="noopener noreferrer">
               Instagram
             </a>
           </div>
