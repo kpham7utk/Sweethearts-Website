@@ -1,13 +1,22 @@
-import { sql } from '@vercel/postgres';
+const { Pool } = require('pg');
+
+// Create the pool
+export const pool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+});
 
 export async function getAllClasses() {
   try {
-    const { rows } = await sql`
+    // Temporarily remove the date filter to see all classes
+    const { rows } = await pool.query(`
       SELECT * FROM classes 
-      WHERE date >= CURRENT_DATE 
-      AND is_active = true 
+      WHERE is_active = true 
       ORDER BY date, time
-    `;
+    `);
     return rows;
   } catch (error) {
     console.error('Database Error:', error);
@@ -17,10 +26,10 @@ export async function getAllClasses() {
 
 export async function getClassById(id) {
   try {
-    const { rows } = await sql`
-      SELECT * FROM classes 
-      WHERE id = ${id} AND is_active = true
-    `;
+    const { rows } = await pool.query(
+      `SELECT * FROM classes WHERE id = $1 AND is_active = true`,
+      [id]
+    );
     return rows[0];
   } catch (error) {
     console.error('Database Error:', error);
@@ -30,8 +39,8 @@ export async function getClassById(id) {
 
 export async function createRegistration(registration) {
   try {
-    const { rows } = await sql`
-      INSERT INTO registrations (
+    const { rows } = await pool.query(
+      `INSERT INTO registrations (
         class_id,
         square_payment_id,
         payment_status,
@@ -39,17 +48,18 @@ export async function createRegistration(registration) {
         customer_name,
         customer_phone,
         participants
-      ) VALUES (
-        ${registration.classId},
-        ${registration.squarePaymentId},
-        ${registration.paymentStatus},
-        ${registration.customerEmail},
-        ${registration.customerName},
-        ${registration.customerPhone},
-        ${registration.participants}
-      )
-      RETURNING *
-    `;
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+      RETURNING *`,
+      [
+        registration.classId,
+        registration.squarePaymentId,
+        registration.paymentStatus,
+        registration.customerEmail,
+        registration.customerName,
+        registration.customerPhone,
+        registration.participants
+      ]
+    );
     return rows[0];
   } catch (error) {
     console.error('Database Error:', error);
@@ -59,13 +69,14 @@ export async function createRegistration(registration) {
 
 export async function updateClassSpots(classId, spotsBooked) {
   try {
-    const { rows } = await sql`
-      UPDATE classes 
-      SET spots_remaining = spots_remaining - ${spotsBooked}
-      WHERE id = ${classId} 
-      AND spots_remaining >= ${spotsBooked}
-      RETURNING *
-    `;
+    const { rows } = await pool.query(
+      `UPDATE classes 
+      SET spots_remaining = spots_remaining - $1
+      WHERE id = $2 
+      AND spots_remaining >= $1
+      RETURNING *`,
+      [spotsBooked, classId]
+    );
     return rows[0];
   } catch (error) {
     console.error('Database Error:', error);

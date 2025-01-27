@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isToday } from 'date-fns';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
@@ -8,50 +8,15 @@ import RegistrationForm from './RegistrationForm';
 interface ClassData {
   id: number;
   title: string;
+  description: string;
+  price: number;
+  max_spots: number;
+  duration: number;
   date: string;
   time: string;
-  spots: number;
-  price: number;
-  description: string;
+  spots_remaining: number;
+  is_active: boolean;
 }
-
-interface RegistrationFormData {
-  name: string;
-  email: string;
-  phone: string;
-  participants: number;
-  specialRequirements?: string;
-}
-
-const classSchedule: ClassData[] = [
-  {
-    id: 1,
-    title: "Basic Cake Decorating",
-    date: "2025-01-20",
-    time: "10:00 AM - 1:00 PM",
-    spots: 8,
-    price: 75,
-    description: "Learn fundamental cake decorating techniques including frosting, piping, and basic flower creation."
-  },
-  {
-    id: 2,
-    title: "Wedding Cake Design",
-    date: "2025-01-25",
-    time: "2:00 PM - 6:00 PM",
-    spots: 6,
-    price: 150,
-    description: "Master the art of wedding cake design, from structure to elegant decorations."
-  },
-  {
-    id: 3,
-    title: "French Pastry Basics",
-    date: "2025-02-05",
-    time: "9:00 AM - 12:00 PM",
-    spots: 10,
-    price: 95,
-    description: "Introduction to classic French pastry techniques and recipes."
-  }
-];
 
 const CakeClassCalendar: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -59,6 +24,22 @@ const CakeClassCalendar: React.FC = () => {
   const [registrationStep, setRegistrationStep] = useState<'initial' | 'form' | 'complete'>('initial');
   const [selectedClass, setSelectedClass] = useState<ClassData | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [classes, setClasses] = useState<ClassData[]>([]);
+
+  // Fetch classes when component mounts
+  useEffect(() => {
+    const fetchClasses = async () => {
+      try {
+        const response = await fetch('/api/test-db');
+        const data = await response.json();
+        setClasses(data);
+      } catch (error) {
+        console.error('Error fetching classes:', error);
+      }
+    };
+
+    fetchClasses();
+  }, []);
 
   const handlePreviousMonth = () => setCurrentDate(subMonths(currentDate, 1));
   const handleNextMonth = () => setCurrentDate(addMonths(currentDate, 1));
@@ -68,7 +49,7 @@ const CakeClassCalendar: React.FC = () => {
     setRegistrationStep('initial');
   };
 
-  const handleRegistration = async (formData: RegistrationFormData) => {
+  const handleRegistration = async (formData: any) => {
     // In a real app, this would submit to your backend
     console.log('Registration data:', { class: selectedClass, form: formData });
     setRegistrationStep('complete');
@@ -84,7 +65,10 @@ const CakeClassCalendar: React.FC = () => {
   };
 
   const getClassesForDay = (date: Date): ClassData[] => {
-    return classSchedule.filter(cls => cls.date === format(date, 'yyyy-MM-dd'));
+    return classes.filter(cls => {
+      const classDate = new Date(cls.date);
+      return format(classDate, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd');
+    });
   };
 
   return (
@@ -176,7 +160,8 @@ const CakeClassCalendar: React.FC = () => {
                         <div className="space-y-2 text-sm">
                           <p><span className="font-medium">Date:</span> {format(new Date(cls.date), 'MMMM d, yyyy')}</p>
                           <p><span className="font-medium">Time:</span> {cls.time}</p>
-                          <p><span className="font-medium">Available Spots:</span> {cls.spots}</p>
+                          <p><span className="font-medium">Duration:</span> {cls.duration / 60} hours</p>
+                          <p><span className="font-medium">Available Spots:</span> {cls.spots_remaining}</p>
                           <p><span className="font-medium">Price:</span> ${cls.price}</p>
                         </div>
                         

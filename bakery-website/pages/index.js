@@ -25,11 +25,11 @@ export default function Home({ featuredProducts = [] }) {
         isScrolled ? 'bg-white/95 backdrop-blur-sm shadow-sm' : 'bg-transparent'
       }`}>
         <div className="nav-container">
-          <Link href="/about">
+          <Link href="/about" prefetch={false}>
             About
           </Link>
           <div className="logo-container">
-            <Link href="/">
+            <Link href="/" prefetch={false}>
               <Image
                 src="/images/logo.png"
                 alt="Sweethearts Bakery Logo"
@@ -40,7 +40,7 @@ export default function Home({ featuredProducts = [] }) {
               />
             </Link>
           </div>
-          <Link href="/find-us">
+          <Link href="/find-us" prefetch={false}>
             Find Us
           </Link>
         </div>

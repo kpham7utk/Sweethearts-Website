@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 interface ClassData {
   id: number;
   title: string;
-  date: string;
-  time: string;
-  spots: number;
+  spots_remaining: number;  // Changed from spots
   price: number;
   description: string;
+  date: string;
+  time: string;
 }
 
 interface RegistrationFormProps {
@@ -80,7 +80,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ classData, onSubmit
           value={formData.participants}
           onChange={(e) => setFormData({ ...formData, participants: Number(e.target.value) })}
         >
-          {[...Array(classData.spots)].map((_, i) => (
+          {[...Array(classData.spots_remaining)].map((_, i) => (
             <option key={i + 1} value={i + 1}>
               {i + 1}
             </option>
