@@ -9,6 +9,8 @@ export const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
+module.exports = { pool };
+
 export async function getAllClasses() {
   try {
     // Temporarily remove the date filter to see all classes
