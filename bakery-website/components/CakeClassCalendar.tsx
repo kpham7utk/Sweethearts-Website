@@ -17,6 +17,14 @@ interface ClassData {
   is_active: boolean;
 }
 
+interface RegistrationData {
+  name: string;
+  email: string;
+  phone: string;
+  participants: number;
+  specialRequirements?: string;
+}
+
 const CakeClassCalendar: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
@@ -48,8 +56,7 @@ const CakeClassCalendar: React.FC = () => {
     setRegistrationStep('initial');
   };
 
-  const handleRegistration = async (formData: any) => {
-    // In a real app, this would submit to your backend
+  const handleRegistration = async (formData: RegistrationData) => {
     console.log('Registration data:', { class: selectedClass, form: formData });
     setRegistrationStep('complete');
     setShowSuccessAlert(true);

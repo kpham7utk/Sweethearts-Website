@@ -14,6 +14,14 @@ interface ClassData {
   is_active: boolean;
 }
 
+interface RegistrationData {
+  name: string;
+  email: string;
+  phone: string;
+  participants: number;
+  specialRequirements?: string;
+}
+
 interface RegistrationFormProps {
   classData: ClassData;
   onSubmit: (data: RegistrationData) => void; // Define RegistrationData type
@@ -50,19 +58,17 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ classData, onSubmit
         setCard(cardInstance);
       } catch (err) {
         console.error('Error initializing Square card:', err);
-        setError('Failed to initialize payment form');
       }
     };
-
+  
     initializeCard();
-
-    // Cleanup function
+    
     return () => {
       if (card) {
         card.destroy();
       }
     };
-  }, []);
+  }, [card]); // Add card to dependency array
 
   const validateForm = (): boolean => {
     const errors: FormErrors = {};

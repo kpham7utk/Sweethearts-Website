@@ -1,5 +1,6 @@
 import { pool } from '../../lib/db';
 import square from 'square';
+const { SquareClient, SquareEnvironment } = require('square');
 
 let squareClient;
 try {
