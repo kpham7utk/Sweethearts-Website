@@ -14,8 +14,25 @@ interface PaymentRequest {
   amount: number;
 }
 
+interface SquareConfig {
+  accessToken: string;
+  environment: 'sandbox' | 'production';
+}
+
+interface SquareClient {
+  paymentsApi: {
+    createPayment: (params: any) => Promise<any>;
+  };
+}
+
+interface Square {
+  default: {
+    Client: new (config: SquareConfig) => SquareClient;
+  }
+}
+
 // Create a new Square client
-const squareClient = new (square as any).Client({
+const squareClient = new (square as unknown as Square).default.Client({
   accessToken: process.env.SQUARE_ACCESS_TOKEN || '',
   environment: 'sandbox'
 });
