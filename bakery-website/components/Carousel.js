@@ -1,6 +1,7 @@
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import Image from 'next/image'
 
 export default function Carousel({ images = [] }) {
   const settings = {
@@ -19,11 +20,13 @@ export default function Carousel({ images = [] }) {
       <Slider {...settings}>
         {images.map((src, i) => (
           <div key={i}>
-            <img
-              src={src}
-              alt={`Slide ${i}`}
-              className="carousel-image"
-            />
+          <Image
+            src={src}
+            alt={`Slide ${i}`}
+            width={500} // Add appropriate width
+            height={300} // Add appropriate height
+            className="carousel-image"
+          />
           </div>
         ))}
       </Slider>

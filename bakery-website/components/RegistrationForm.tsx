@@ -16,7 +16,7 @@ interface ClassData {
 
 interface RegistrationFormProps {
   classData: ClassData;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: RegistrationData) => void; // Define RegistrationData type
   onCancel: () => void;
 }
 

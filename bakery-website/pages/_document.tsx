@@ -7,6 +7,7 @@ export default function Document() {
         <script
           type="text/javascript"
           src="https://sandbox.web.squarecdn.com/v1/square.js"
+          async
         />
       </Head>
       <body>

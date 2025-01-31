@@ -21,7 +21,7 @@ export default function AddClass() {
         },
         body: JSON.stringify(formData),
       });
-      const data = await response.json();
+      // const data = await response.json();
       if (response.ok) {
         alert('Class added successfully!');
         // Clear form

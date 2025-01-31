@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isToday } from 'date-fns';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
-import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import RegistrationForm from './RegistrationForm';
 
 interface ClassData {
