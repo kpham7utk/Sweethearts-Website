@@ -1,30 +1,35 @@
 import { pool } from '../../lib/db';
-import square from 'square';
-const { SquareClient, SquareEnvironment } = require('square');
+import { NextApiRequest, NextApiResponse } from 'next';
 
-let squareClient;
-try {
-  squareClient = new SquareClient({
-    token: process.env.SQUARE_ACCESS_TOKEN,
-    environment: SquareEnvironment.Sandbox
-  });
-} catch (error) {
-  console.error('Error initializing Square client:', error);
+
+interface PaymentRequest {
+  sourceId: string;
+  classId: number;
+  customerInfo: {
+    name: string;
+    email: string;
+    phone: string;
+  };
+  participants: number;
+  amount: number;
 }
 
-export default async function handler(req, res) {
-  if (!squareClient) {
-    console.error('Square client not initialized');
-    return res.status(500).json({ error: 'Payment service not available' });
-  }
+const square = require('square');
+const squareClient = new square.Client({
+  accessToken: process.env.SQUARE_ACCESS_TOKEN || '',
+  environment: 'sandbox' // or 'production' for live
+});
 
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
   try {
-    console.log('Request body:', req.body);
-    const { sourceId, classId, customerInfo, participants, amount } = req.body;
+    const { sourceId, classId, customerInfo, participants, amount }: PaymentRequest = req.body;
 
     // Start a database transaction
     const client = await pool.connect();
@@ -41,21 +46,18 @@ export default async function handler(req, res) {
         throw new Error('Not enough spots available');
       }
 
-      const amountInCents = parseInt(amount * 100);
-      console.log('Amount in cents:', amountInCents, typeof amountInCents); // Log amount in cents
-
       // Process payment with Square
-      const payment = await squareClient.payments.create({
-        sourceId: sourceId,
+      const payment = await squareClient.paymentsApi.createPayment({
+        sourceId,
         amountMoney: {
-          amount: BigInt(Math.round(amount * 100)), // Convert to BigInt
+          amount: BigInt(Math.round(amount * 100)),
           currency: 'USD'
         },
         idempotencyKey: `${classId}-${Date.now()}-${Math.random()}`,
         buyerEmailAddress: customerInfo.email,
       });
-      
-      if (payment.payment?.status === 'COMPLETED') {
+
+      if (payment?.result?.payment?.status === 'COMPLETED') {
         // Update spots and create registration
         await client.query(
           'UPDATE classes SET spots_remaining = spots_remaining - $1 WHERE id = $2',
@@ -75,7 +77,7 @@ export default async function handler(req, res) {
           RETURNING *`,
           [
             classId,
-            payment.payment.id,
+            payment.result.payment.id,
             'completed',
             customerInfo.email,
             customerInfo.name,
@@ -85,7 +87,7 @@ export default async function handler(req, res) {
         );
 
         await client.query('COMMIT');
-        res.status(200).json({ success: true, registration });
+        return res.status(200).json({ success: true, registration });
       } else {
         throw new Error('Payment failed');
       }
@@ -97,8 +99,8 @@ export default async function handler(req, res) {
     }
   } catch (error) {
     console.error('Registration error:', error);
-    res.status(500).json({ 
-      error: error.message || 'Failed to process registration' 
+    return res.status(500).json({ 
+      error: error instanceof Error ? error.message : 'Failed to process registration' 
     });
   }
 }

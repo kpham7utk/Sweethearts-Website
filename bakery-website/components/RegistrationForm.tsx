@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { loadSquareSdk } from 'utils/squareUtils';
 
 interface ClassData {
@@ -14,7 +14,7 @@ interface ClassData {
   is_active: boolean;
 }
 
-interface RegistrationData {
+interface RegistrationFormData {
   name: string;
   email: string;
   phone: string;
@@ -24,7 +24,7 @@ interface RegistrationData {
 
 interface RegistrationFormProps {
   classData: ClassData;
-  onSubmit: (data: RegistrationData) => void; // Define RegistrationData type
+  onSubmit: (data: RegistrationFormData) => void;
   onCancel: () => void;
 }
 
@@ -35,8 +35,21 @@ interface FormErrors {
   participants?: string;
 }
 
+interface SquareCardInstance {
+  attach(elementId: string): Promise<void>;
+  tokenize(): Promise<{
+    status: "OK" | "ERROR";
+    token?: string;
+    errors?: Array<{
+      code: string;
+      detail: string;
+      field?: string;
+    }>;
+  }>;
+}
+
 const RegistrationForm: React.FC<RegistrationFormProps> = ({ classData, onSubmit, onCancel }) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<RegistrationFormData>({
     name: '',
     email: '',
     phone: '',
@@ -46,51 +59,44 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ classData, onSubmit
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formErrors, setFormErrors] = useState<FormErrors>({});
-  const [card, setCard] = useState<any>(null);
+  const cardRef = useRef<SquareCardInstance | null>(null);
 
-  // Initialize Square card when component mounts
   useEffect(() => {
     const initializeCard = async () => {
       try {
         const payments = await loadSquareSdk();
         const cardInstance = await payments.card();
         await cardInstance.attach('#card-container');
-        setCard(cardInstance);
+        cardRef.current = cardInstance;
       } catch (err) {
-        console.error('Error initializing Square card:', err);
+        setError(err instanceof Error ? err.message : 'Failed to initialize payment form');
       }
     };
-  
+
     initializeCard();
-    
+
     return () => {
-      if (card) {
-        card.destroy();
-      }
+      cardRef.current = null;
     };
-  }, [card]); // Add card to dependency array
+  }, []);
 
   const validateForm = (): boolean => {
     const errors: FormErrors = {};
     
-    // Name validation
     if (formData.name.trim().length < 2) {
       errors.name = 'Name must be at least 2 characters';
     }
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       errors.email = 'Please enter a valid email address';
     }
 
-    // Phone validation
     const phoneRegex = /^\d{10}$/;
     if (!phoneRegex.test(formData.phone.replace(/\D/g, ''))) {
       errors.phone = 'Please enter a valid 10-digit phone number';
     }
 
-    // Participants validation
     if (formData.participants < 1 || formData.participants > classData.spots_remaining) {
       errors.participants = `Please select between 1 and ${classData.spots_remaining} participants`;
     }
@@ -110,47 +116,18 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ classData, onSubmit
     setError(null);
 
     try {
-      if (!card) {
+      if (!cardRef.current) {
         throw new Error('Payment form not initialized');
       }
 
-      // Get payment token
-      const result = await card.tokenize();
-      console.log('Tokenization result:', result);
-      
-      if (result.status === 'OK') {
-        const response = await fetch('/api/process-payment', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            sourceId: result.token,
-            classId: classData.id,
-            customerInfo: {
-              name: formData.name,
-              email: formData.email,
-              phone: formData.phone,
-            },
-            participants: formData.participants,
-            amount: classData.price * formData.participants,
-          }),
-        });
-
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.error || 'Registration failed');
-        }
-
-        onSubmit(data);
+      const result = await cardRef.current.tokenize();
+      if (result.status === 'OK' && result.token) {
+        onSubmit(formData);
       } else {
-        console.error('Tokenization errors:', result.errors);
         throw new Error(result.errors?.[0]?.detail || 'Payment tokenization failed');
       }
     } catch (err) {
-      const error = err as Error;
-      setError(error.message || 'An unexpected error occurred');
-      console.error('Payment error:', error);
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
     } finally {
       setLoading(false);
     }
