@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { pool } from '../../lib/db';
-
-const square = require('square').default;
+import square from 'square';
 
 interface PaymentRequest {
   sourceId: string;
@@ -15,9 +14,10 @@ interface PaymentRequest {
   amount: number;
 }
 
-const squareClient = new square.Client({
+// Create a new Square client
+const squareClient = new (square as any).Client({
   accessToken: process.env.SQUARE_ACCESS_TOKEN || '',
-  environment: 'sandbox' // or 'production' for live
+  environment: 'sandbox'
 });
 
 export default async function handler(
