@@ -14,6 +14,27 @@ interface PaymentRequest {
   amount: number;
 }
 
+interface PaymentMoney {
+  amount: bigint;
+  currency: string;
+}
+
+interface CreatePaymentParams {
+  sourceId: string;
+  amountMoney: PaymentMoney;
+  idempotencyKey: string;
+  buyerEmailAddress?: string;
+}
+
+interface PaymentResult {
+  result: {
+    payment: {
+      id: string;
+      status: 'COMPLETED' | 'FAILED' | 'PENDING';
+    };
+  };
+}
+
 interface SquareConfig {
   accessToken: string;
   environment: 'sandbox' | 'production';
@@ -21,7 +42,7 @@ interface SquareConfig {
 
 interface SquareClient {
   paymentsApi: {
-    createPayment: (params: any) => Promise<any>;
+    createPayment: (params: CreatePaymentParams) => Promise<PaymentResult>;
   };
 }
 
