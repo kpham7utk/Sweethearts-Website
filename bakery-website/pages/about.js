@@ -17,17 +17,17 @@ const About = () => {
 
           <h2 className="text-3xl mb-6 font-playfair">Meet Teddy</h2>
           <p className="text-lg mb-8">
-            I'm Theodore James Washington III (Teddy), a Detroit native who is self-taught after years of immersing myself in baking and pastry arts.
+            I&apos;m Theodore James Washington III (Teddy), a Detroit native who is self-taught after years of immersing myself in baking and pastry arts.
           </p>
 
           <div className="journey-section">
             <h3 className="text-2xl mb-4 font-playfair">Early Beginnings</h3>
             <p className="text-lg mb-8">
-              My love for baking began at a very young age and was fostered by both my parents. During my homeschooling (1 year), the Martha Stewart show introduced me to wedding cakes. With my mother, Classie's encouragement and use of her KitchenAid, I was able to explore and foster my talent over the years. With inspiration drawn from continued observation of pioneers Sylvia Weinstock, RBI Cakes, and Colette Peters, I set out to share my unique perspective.
+              My love for baking began at a very young age and was fostered by both my parents. During my homeschooling (1 year), the Martha Stewart show introduced me to wedding cakes. With my mother, Classie&apos;s encouragement and use of her KitchenAid, I was able to explore and foster my talent over the years. With inspiration drawn from continued observation of pioneers Sylvia Weinstock, RBI Cakes, and Colette Peters, I set out to share my unique perspective.
             </p>
 
             <p className="text-lg mb-8">
-              Through hands-on experience, I have developed tried-and-true methods of scratch recipe formulation. In 2007, I was awarded for "Exemplary Form, Taste, and Quality" in SkillsUSA Regional, State, and National competitions.
+              Through hands-on experience, I have developed tried-and-true methods of scratch recipe formulation. In 2007, I was awarded for &quot;Exemplary Form, Taste, and Quality&quot; in SkillsUSA Regional, State, and National competitions.
             </p>
           </div>
 
@@ -45,7 +45,7 @@ const About = () => {
           <div className="vision-section">
             <h3 className="text-2xl mb-4 font-playfair">Our Vision</h3>
             <p className="text-lg mb-8">
-              While it has been rewarding to gain experience on multiple platforms, I have had my own daydreams and ideas about what I would like to present to the world. Pulling from the memories, tastes, and gifts given to me from the many women in my life, whom most have long passed. I'm setting out to share those experiences of love, joy and memories in the form of baked goods. Not just sweet but balanced and using the absolute best ingredients possible when in season.
+              While it has been rewarding to gain experience on multiple platforms, I have had my own daydreams and ideas about what I would like to present to the world. Pulling from the memories, tastes, and gifts given to me from the many women in my life, whom most have long passed. I&apos;m setting out to share those experiences of love, joy and memories in the form of baked goods. Not just sweet but balanced and using the absolute best ingredients possible when in season.
             </p>
           </div>
 

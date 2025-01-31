@@ -80,7 +80,7 @@ const CakeClassCalendar: React.FC = () => {
       {showSuccessAlert && (
         <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800">
           <p className="font-medium">Registration Successful!</p>
-          <p className="text-sm">You're all set! Check your email for confirmation details.</p>
+          <p className="text-sm">You&apos;re all set! Check your email for confirmation details.</p>
         </div>
       )}
 
