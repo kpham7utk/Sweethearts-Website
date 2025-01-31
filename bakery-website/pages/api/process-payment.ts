@@ -1,6 +1,6 @@
 import { pool } from '../../lib/db';
 import { NextApiRequest, NextApiResponse } from 'next';
-
+import { SquareClient} from 'square';
 
 interface PaymentRequest {
   sourceId: string;
