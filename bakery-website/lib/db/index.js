@@ -1,7 +1,7 @@
 import { Pool } from 'pg';
 
 // Create the pool
-export const pool = new Pool({
+const pool = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
   database: process.env.DB_NAME,
@@ -9,11 +9,10 @@ export const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
-module.exports = { pool };
 
-export async function getAllClasses() {
+// Functions
+async function getAllClasses() {
   try {
-    // Temporarily remove the date filter to see all classes
     const { rows } = await pool.query(`
       SELECT * FROM classes 
       WHERE is_active = true 
@@ -26,7 +25,7 @@ export async function getAllClasses() {
   }
 }
 
-export async function getClassById(id) {
+async function getClassById(id) {
   try {
     const { rows } = await pool.query(
       `SELECT * FROM classes WHERE id = $1 AND is_active = true`,
@@ -39,7 +38,7 @@ export async function getClassById(id) {
   }
 }
 
-export async function createRegistration(registration) {
+async function createRegistration(registration) {
   try {
     const { rows } = await pool.query(
       `INSERT INTO registrations (
@@ -69,7 +68,7 @@ export async function createRegistration(registration) {
   }
 }
 
-export async function updateClassSpots(classId, spotsBooked) {
+async function updateClassSpots(classId, spotsBooked) {
   try {
     const { rows } = await pool.query(
       `UPDATE classes 
@@ -85,3 +84,12 @@ export async function updateClassSpots(classId, spotsBooked) {
     throw new Error('Failed to update class spots');
   }
 }
+
+// Single export statement at the end
+export {
+  pool,
+  getAllClasses,
+  getClassById,
+  createRegistration,
+  updateClassSpots
+};
