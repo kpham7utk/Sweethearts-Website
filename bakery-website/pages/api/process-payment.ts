@@ -55,7 +55,7 @@ interface Square {
 // Create a new Square client
 const squareClient = new (square as unknown as Square).default.Client({
   accessToken: process.env.SQUARE_ACCESS_TOKEN || '',
-  environment: 'sandbox'
+  environment: 'production'
 });
 
 export default async function handler(
