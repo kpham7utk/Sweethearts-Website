@@ -7,7 +7,7 @@ const FindUs = () => {
       <div className="text-center max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg">
         <h1 className="text-3xl font-bold font-playfair mb-4">Find Us</h1>
         <p className="text-lg text-gray-600 mb-6">
-          We're working on something sweet! Check back soon for our location and contact details.
+          We&apos;re working on something sweet! Check back soon for our location and contact details.
         </p>
         <Link 
           href="/"
