@@ -20,7 +20,7 @@ export default function Home() {
         </h1>
         
         <p className="text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto px-4">
-          We're baking up something special! Our new website will be ready soon.
+          We&apos;re baking up something special! Our new website will be ready soon.
         </p>
       </div>
     </div>
