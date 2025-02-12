@@ -6,7 +6,7 @@ export default function Home() {
       <div className="hero-content"> {/* Using your existing hero-content class */}
         <div className="mb-12">
           <Image
-            src="/images/logotransparent.png"
+            src="/images/logotransparent.PNG"
             alt="Sweethearts Bakery Logo"
             width={330}
             height={110}
